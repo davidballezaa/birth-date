@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 let User = require("./models/user.model");
 
@@ -7,6 +8,7 @@ require("dotenv").config();
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 const uri = process.env.ATLAS_URI;
@@ -36,6 +38,7 @@ app.post("/", (req, res) => {
   const birthdayMonth = req.body.birthdayMonth;
   const birthdayYear = req.body.birthdayYear;
   const contact = req.body.contact;
+  const description = req.body.description;
 
   const newUser = new User({
     username,
@@ -45,17 +48,12 @@ app.post("/", (req, res) => {
     birthdayMonth,
     birthdayYear,
     contact,
+    description,
   });
 
   newUser
     .save()
     .then(() => res.json("Created!"))
-    .catch((err) => res.status(400).json("Error: " + err));
-});
-
-app.get("/:id", (req, res) => {
-  User.findById(req.params.id)
-    .then((user) => res.json(user))
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
